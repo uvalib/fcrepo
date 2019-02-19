@@ -155,6 +155,12 @@ public class SaxonServlet
         String style = req.getParameter("style");
         String clear = req.getParameter("clear-stylesheet-cache");
 
+        if (source == null || style == null) {
+            res.setContentType("text/plain");
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "source and style parameters are required!");
+            return;
+		}
+
         if (clear != null && clear.equals("yes")) {
             m_cache.remove(style);
         }
