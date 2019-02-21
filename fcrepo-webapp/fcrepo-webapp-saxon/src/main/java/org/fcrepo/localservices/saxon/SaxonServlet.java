@@ -160,7 +160,8 @@ public class SaxonServlet
         String source = req.getParameter("source");
         String style = req.getParameter("style");
         String clear = req.getParameter("clear-stylesheet-cache");
-        logger.info(req.getRequestURL().toString());
+        final String requestUrl = req.getRequestURL().toString() + (req.getQueryString() == null ? "" : req.getQueryString());
+        logger.info("Request for " + requestUrl);
 
         if (source == null || style == null) {
             res.setContentType("text/plain");
@@ -177,7 +178,7 @@ public class SaxonServlet
         } catch (Exception e) {
             res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e
                     .getMessage());
-            e.printStackTrace();
+            logger.error("Error processing request for " + requestUrl, e); 
         }
     }
 
