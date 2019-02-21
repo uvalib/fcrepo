@@ -161,12 +161,14 @@ public class SaxonServlet
         String style = req.getParameter("style");
         String clear = req.getParameter("clear-stylesheet-cache");
         final String requestUrl = req.getRequestURL().toString() + (req.getQueryString() == null ? "" : req.getQueryString());
-        logger.info("Request for " + requestUrl);
-
+        
         if (source == null || style == null) {
+            logger.info("Request made by " + req.getRemoteAddr() + " without style or source parameters.");
             res.setContentType("text/plain");
             res.sendError(HttpServletResponse.SC_BAD_REQUEST, "source and style parameters are required!");
             return;
+		} else {
+			logger.info("Request to apply " + style + " to " + source);
 		}
 
         if (clear != null && clear.equals("yes")) {
