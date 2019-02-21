@@ -172,16 +172,16 @@ public class SaxonServlet
 		}
 
         if (clear != null && clear.equals("yes")) {
+			logger.info("Clearing cached stylesheet for " + style + ".");
             m_cache.remove(style);
         }
 
         try {
             apply(style, source, req, res);
-        } catch (Exception e) {
-            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e
-                    .getMessage());
-            logger.error("Error processing request for " + requestUrl, e); 
-        }
+		} catch (Throwable t) {
+			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error performing transform!");
+			logger.error("Error performing transform!", t);
+	    }
     }
 
     /**
@@ -237,23 +237,30 @@ public class SaxonServlet
                     pss.getOutputProperties()
                             .getProperty(OutputKeys.MEDIA_TYPE);
             if (mime == null) {
+				logger.debug("Stylesheet didn't specify a media type, defaulting to UTF-8");
                 res.setContentType("text/html");
             } else {
                 res.setContentType(mime);
             }
+            // Set the appropriate charset
+            String encoding = pss.getOutputProperties().getProperty(OutputKeys.ENCODING);
+            if (encoding == null) {
+				logger.debug("Stylesheet didn't specify a character encoding, defaulting to UTF-8");
+				res.setCharacterEncoding("UTF-8");
+			} else {
+				res.setCharacterEncoding(encoding);
+			}
 
             // Transform
             StreamSource ss = new StreamSource(sourceStream);
             ss.setSystemId(source);
             transformer.transform(ss, new StreamResult(res.getOutputStream()));
-		} catch (Throwable t) {
-			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, t.getMessage() == null ? t.getClass().getName() : t.getMessage());
-            logger.error("Error applying transformation!", t); 
-        } finally {
+		} finally {
             if (sourceStream != null) {
                 try {
                     sourceStream.close();
                 } catch (Exception e) {
+					logger.error("Erorr closing source stream!", e);
                 }
             }
         }
