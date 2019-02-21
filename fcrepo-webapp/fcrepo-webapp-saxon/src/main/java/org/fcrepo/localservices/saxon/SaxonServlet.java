@@ -40,6 +40,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.params.CoreConnectionPNames;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sf.saxon.FeatureKeys;
 import net.sf.saxon.value.StringValue;
 
@@ -70,6 +73,9 @@ public class SaxonServlet
         extends HttpServlet {
 
     private static final long serialVersionUID = 2L;
+    
+    private static final Logger logger 
+            = LoggerFactory.getLogger(SaxonServlet.class);
 
     /** time to wait for getting data via http before giving up */
     public final int TIMEOUT_SECONDS = 10;
@@ -154,6 +160,7 @@ public class SaxonServlet
         String source = req.getParameter("source");
         String style = req.getParameter("style");
         String clear = req.getParameter("clear-stylesheet-cache");
+        logger.info(req.getRequestURL().toString());
 
         if (source == null || style == null) {
             res.setContentType("text/plain");
