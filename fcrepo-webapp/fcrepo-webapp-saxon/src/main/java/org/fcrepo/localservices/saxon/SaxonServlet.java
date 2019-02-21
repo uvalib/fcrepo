@@ -246,6 +246,9 @@ public class SaxonServlet
             StreamSource ss = new StreamSource(sourceStream);
             ss.setSystemId(source);
             transformer.transform(ss, new StreamResult(res.getOutputStream()));
+		} catch (Throwable t) {
+			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, t.getMessage() == null ? t.getClass().getName() : t.getMessage());
+            logger.error("Error applying transformation!", t); 
         } finally {
             if (sourceStream != null) {
                 try {
