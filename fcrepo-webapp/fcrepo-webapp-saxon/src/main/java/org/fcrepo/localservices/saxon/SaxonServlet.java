@@ -244,7 +244,6 @@ public class SaxonServlet
             StreamSource ss = new StreamSource(sourceStream);
             ss.setSystemId(source);
             transformer.transform(ss, new StreamResult(res.getOutputStream()));
-
         } finally {
             if (sourceStream != null) {
                 try {
