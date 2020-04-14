@@ -179,8 +179,9 @@ public class SaxonServlet
         try {
             apply(style, source, req, res);
 		} catch (Throwable t) {
-			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error performing transform!");
+			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error performing transform! (" + req.getRequestURL().toString() + (req.getQueryString() != null ? "?" + req.getQueryString() : "") + ")");
 			logger.error("Error performing transform!", t);
+			t.printStackTrace();
 	    }
     }
 
