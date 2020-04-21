@@ -12,19 +12,16 @@ COPY . ./
 RUN cd fcrepo-webapp/fcrepo-webapp-saxon && mvn clean package
 
 # base image
-FROM tomcat:8.0
-
-# install updates and dependancies
-RUN apt-get -y update && apt-get -y install
+FROM jetty:9.4.27-jre8
 
 # add the healthcheck
-RUN mkdir /usr/local/tomcat/webapps/healthcheck && echo "OK" > /usr/local/tomcat/webapps/healthcheck/index.html
+RUN mkdir /var/lib/jetty/webapps/healthcheck && echo "OK" > /var/lib/jetty/webapps/healthcheck/index.html
 
 # port and run command
 EXPOSE 8080
 
 # copy the WAR file
-COPY --from=builder /build/fcrepo-webapp/fcrepo-webapp-saxon/target/saxon.war /usr/local/tomcat/webapps/
+COPY --from=builder /build/fcrepo-webapp/fcrepo-webapp-saxon/target/saxon.war /var/lib/jetty/webapps/ROOT.war
 
 #
 # end of file
