@@ -109,6 +109,8 @@ public class SaxonServlet
                 new Scheme("http", 80, PlainSocketFactory.getSocketFactory()));
         m_cManager.getSchemeRegistry().register(
                 new Scheme("http-tomcat", 8080, PlainSocketFactory.getSocketFactory()));
+        m_cManager.setDefaultMaxPerRoute(10);
+        m_cManager.setMaxTotal(100);
 
         Enumeration<?> enm = config.getInitParameterNames();
         while (enm.hasMoreElements()) {
